@@ -8,6 +8,12 @@ import axios from 'axios';
 import { store } from './store';
 
 export default {
+  data() {
+    return {
+      store,
+    };
+  },
+
   components: { AppHeader, AppMain, ResultList, AppCard },
 
   methods: {
@@ -19,8 +25,11 @@ export default {
             query: searchStr,
           },
         })
-        .then(response => response.data);
-    }
+        .then(response => {
+          response.data.result;
+          this.store.arrMovies = response.data.result;
+        });
+    },
   },
 };
 </script >
