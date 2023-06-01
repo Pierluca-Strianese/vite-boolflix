@@ -1,43 +1,63 @@
 <script>
-
-import AppHeader from './components/AppHeader.vue';
-import AppMain from './components/AppMain.vue';
-import ResultList from './components/ResultList.vue';
-import AppCard from './components/AppCard.vue';
-import axios from 'axios';
+import axios from "axios";
 import { store } from './store';
+import AppHeader from "./components/AppHeader.vue";
+import AppMain from "./components/AppMain.vue";
+
 
 export default {
+  name: "App",
+  components: {
+    AppHeader,
+    AppMain,
+  },
   data() {
     return {
-      store,
-    };
+      store
+    }
   },
-
-  components: { AppHeader, AppMain, ResultList, AppCard },
-
   methods: {
-    requestToAPI(searchStr) {
-      axios
-        .get('https://api.themoviedb.org/3/search/movie', {
-          params: {
-            api_key: 'e6b2bdbe301aaaad8a0bf3b9509fbec6',
-            query: searchStr,
-          },
+    getApi() {
+      axios.get(store.apiUrl, {
+        params: {
+          query: store.movieSearchTitle
+        }
+      })
+        .then(result => {
+          store.movieResultArray = result.data.results;
+          console.log(store.movieResultArray);
         })
-        .then(response => {
-          response.data.result;
-          this.store.arrMovies = response.data.result;
-        });
     },
+    getApiSeries() {
+      axios.get(store.apiUrlSeries, {
+        params: {
+          query: store.movieSearchTitle
+        }
+      })
+        .then(result => {
+          store.seriesResultArray = result.data.results;
+          console.log(store.seriesResultArray);
+        })
+    }
   },
-};
-</script >
+  mounted() {
+    this.getApi();
+    this.getApiSeries();
+  }
+}
+</script>
 
 <template>
-  <AppHeader @searchRequest="requestToAPI" />
+  <AppHeader @searchMovie="getApi" @searchSeries="getApiSeries" />
+  <AppMain />
 </template>
 
+
 <style lang="scss">
-@import "bootstrap/scss/bootstrap";
+body {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  background-color: #141414;
+}
 </style>
